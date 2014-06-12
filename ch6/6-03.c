@@ -10,6 +10,7 @@
 
 #define MAXWORD 100
 #define MAXNUMS 1000
+#define MAXLINES 10000
 #define NNOISE (sizeof(noisewords) / sizeof(*noisewords))
 
 /* word not in noisewords */
@@ -23,8 +24,8 @@ int nlines = 0;
 
 struct tnode {
     char *word;
-    int linenums[MAXNUMS];
-    int f;
+    int linenums[MAXNUMS];  /* line numbers on which 'word' appears */
+    int f;  /* #elements in linenums */
     struct tnode *left;
     struct tnode *right;
 };
@@ -62,7 +63,6 @@ int main(void)
 {
     struct tnode *root = NULL;
     char word[MAXWORD];
-    int n;
 
     while (getword(word, MAXWORD) != EOF)
         if (GOOD(word))
@@ -126,7 +126,13 @@ int getword(char *word, int lim)
 
     while (isspace(c = getch()))
         if (c == '\n')
-            nlines++;
+            if (nlines < MAXLINES)
+                nlines++;
+            else {
+                printf("Error: too many lines");
+                exit(1);
+            }
+
 
     if (c != EOF) {
         *w++ = c;
@@ -170,7 +176,7 @@ int binsearch(char *word, char *list[], int n)
     int cond;
     int low, mid, high;
     low = 0;
-    high = NNOISE - 1;
+    high = n - 1;
 
     while (low <= high) {
         mid = (low+high)/2;
