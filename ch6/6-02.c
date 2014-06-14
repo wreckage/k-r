@@ -33,6 +33,8 @@
 #define MAXLINE 1000
 #define NTYPES (sizeof type / sizeof *type)
 
+#define GOODTOKEN(s) (binsearch(s, type, NTYPES) < 0 && strlen(s)) ? 1 : 0
+
 char *type[] = {
     "char",
     "enum",
@@ -94,7 +96,7 @@ int main(int argc, char *argv[])
                 while (token) {
                     if (!skipfirst) {
                         getvarfromtoken(token, var, MAXWORD);
-                        if (goodtoken(var))
+                        if (GOODTOKEN(var))
                             root = addtree(root, var);
                     }
                     else
@@ -104,15 +106,6 @@ int main(int argc, char *argv[])
             }
     treeprint(root, match_num);
     return 0;
-}
-
-
-/* goodtoken: checks that 's' isn't a type and that it has length > 0 */
-int goodtoken(char *s)
-{
-    int n;
-
-    return ((n = binsearch(s, type, NTYPES)) < 0 && strlen(s)) ? 1 : 0;
 }
 
 /* moveforward: return 's', which is 'p' moved forward by 'len' amount */
