@@ -59,28 +59,11 @@ void minprintf(char *fmt, ...)
     va_end(ap);  /* clean up when done */
 }
 
-int sum(int num_args, ...)
-{
-    int val = 0;
-    va_list ap;
-    int i;
-
-    va_start(ap, num_args);
-
-    for (i = 0; i < num_args; i++)
-        val += va_arg(ap, int);
-
-    va_end(ap);
-    return val;
-}
-
 int main(void)
 {
     char s[] = "Hello World!";
     minprintf("I say, %s\n", s);
     minprintf("Here's a character: %c\n", 'z');
-
-    printf("Sum of 2, 5, and 22 is: %d\n", sum(3, 2, 5, 22));
 
     char *p;
     minprintf("A character pointer's address: %p\n", p);
